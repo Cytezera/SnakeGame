@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream> 
 #include <cstdlib>
 #include <vector> 
@@ -6,7 +7,7 @@
 using namespace std ;
 
 const int width = 25 ; 
-const int height = 25 ; 
+const int height = 20 ; 
 int x, y , fruitX, fruitY , gameScore; 
 enum Direction { STOP = 0 , LEFT , RIGHT , UP , DOWN } ; 
 Direction dir ;
@@ -99,7 +100,7 @@ void drawGame() {
 	cout << "Score: " << gameScore << endl ;
 }
 void movement(){
-	for (int i = snake.size() - 1; i > 0 ; i ++){
+	for (int i = snake.size() - 1; i > 0 ; i --){
 		snake[i] = snake[i-1] ; 
 	}	
 	if (dir == LEFT) x--; 
@@ -120,22 +121,23 @@ void checkState(){
 	}
 	if (x == fruitX && y == fruitY){
 		gameScore += 10; 
-		fruitX = rand() % width; 
-		fruitY = rand() % height ; 
+		fruitX = rand() % width;
+		fruitY = rand() % height;
 		snake.push_back({-1,-1}); 
-	}
+	} while (find(snake.begin(), snake.end(), make_pair(fruitX, fruitY)) != snake.end());
+
+	
 }
 int main () {
 	setNonBlockingInput(true); 
 	gameSetup();
 
 	while(!gameOver){
-
 		drawGame();
 		gameInput(); 
 		movement();
 		checkState();
-		usleep(150000); 
+		usleep(100000); 
 	}
 	setNonBlockingInput(false);
 	cout << "Game Over " << endl; 
